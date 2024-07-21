@@ -7,6 +7,7 @@ import TodoList from './TodoList';
 import Header from './Header';
 import InputTodo from './InputTodo';
 import About from '../pages/About';
+import Login from '../pages/Login'
 import NotMatch from '../pages/NotMatch';
 import Navbar from './Navbar';
 import '../style.css';
@@ -76,6 +77,7 @@ const TodoContainer = () => {
             </div>
     )}
         />
+        <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotMatch />} />
       </Routes>

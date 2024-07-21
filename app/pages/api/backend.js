@@ -6,7 +6,7 @@ const BACKEND_PORT = process.env.BACKEND_PORT;
 const LOGIN_PORT = process.env.LOGIN_PORT;
 const TASKS_PORT = process.env.TASKS_PORT;
 
-export default createProxyMiddleware({ target: `http://localhost:${BACKEND_PORT}/login`, changeOrigin: true}));
+export default createProxyMiddleware({ target: `http://localhost:${BACKEND_PORT}/login`, changeOrigin: true});
 app.use('/login', createProxyMiddleware({ target: `http://localhost:${LOGIN_PORT}`, changeOrigin: true,
     onProxyReq: (proxyReq, req, res) => {
         console.log(`Proxying request to: http://localhost:${LOGIN_PORT}${req.url}`);

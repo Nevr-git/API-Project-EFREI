@@ -15,6 +15,11 @@ const Navbar = () => {
       path: '/about',
       text: 'About',
     },
+    {
+      id: 3,
+      path: '/login',
+      text: 'Login with Google'
+    }
   ];
   return (
     <nav>
