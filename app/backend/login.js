@@ -19,8 +19,6 @@ const MONGO_HOSTNAME = process.env.MONGO_HOSTNAME;
 const SERVER_PORT = process.env.AUTH_PORT;
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 const MONGO_URI = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOSTNAME}`;
 
 console.log(MONGO_URI);
@@ -61,8 +59,6 @@ function getCookie(name) {
 
 const MONGO_DB = MONGO_CLIENT.db("apiproject");
 const MONGO_USERS = MONGO_DB.collection("users");
-
-console.log(MONGO_USERS);
 
 // Configure the Google strategy for Passport
 passport.use(new GoogleStrategy({
@@ -115,14 +111,14 @@ app.get('/auth/callback', passport.authenticate('google', { session: false }), (
   // Retrieve the JWT token from req.authInfo
   const token = req.authInfo.token;
   console.log("token : " + token);
-  localStorage.setItem('token', token);
+  res.cookie('token', token, { httpOnly: true, secure: true });
   // Send the token to the client (e.g., in a query parameter, header, or cookie)
-  res.redirect(`/profile?token=${token}`);
+  res.redirect(`/profile`);
 });
 
 // Route to display the user's profile after authentication
 app.get('/profile', (req, res) => {
-  const token = req.query.token;
+  const token = req.cookies.token;
   if (token) {
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
@@ -138,7 +134,7 @@ app.get('/profile', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  const token = getCookie('token');
+  const token = req.cookies.token;
   if (token) {
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
@@ -149,7 +145,6 @@ app.get('/login', (req, res) => {
     });
   } else {
     res.status(401).json({ message: 'Token required' });
-    res.redirect('/auth/google');
   }
 });
 
