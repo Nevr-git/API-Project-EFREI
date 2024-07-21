@@ -16,7 +16,7 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const MONGO_USERNAME = process.env.MONGO_USERNAME;
 const MONGO_PASSWORD = process.env.MONGO_PASSWORD;
 const MONGO_HOSTNAME = process.env.MONGO_HOSTNAME;
-const SERVER_PORT = process.env.PORT;
+const SERVER_PORT = process.env.AUTH_PORT;
 const JWT_SECRET = process.env.JWT_SECRET_KEY;
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -26,7 +26,6 @@ const MONGO_URI = `mongodb+srv://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOS
 console.log(MONGO_URI);
 
 // Create a new MongoClient
-
 const MONGO_CLIENT = new MongoClient(MONGO_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -34,6 +33,31 @@ const MONGO_CLIENT = new MongoClient(MONGO_URI, {
     deprecationErrors: true,
   }
 });
+
+/*
+// Function to set a JWT into a cookie
+function setCookie(name, jwt, hours) {
+  let expires = "";
+  if (hours) {
+      const date = new Date();
+      date.setTime(date.getTime() + (hours*3600*1000));
+      expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (jwt || "")  + expires + "; path=/";
+}
+
+// Function to get the JWT in a cookie value
+function getCookie(name) {
+  let nameEQ = name + "=";
+  let ca = document.cookie.split(';');
+  for(let i=0; i<ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) == ' ') c = c.substring(1,c.length);
+      if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  }
+  return null;
+}
+*/
 
 const MONGO_DB = MONGO_CLIENT.db("apiproject");
 const MONGO_USERS = MONGO_DB.collection("users");
@@ -88,10 +112,10 @@ app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'em
 
 // OAuth callback route
 app.get('/auth/callback', passport.authenticate('google', { session: false }), (req, res) => {
-  res.redirect('/profile');
   // Retrieve the JWT token from req.authInfo
   const token = req.authInfo.token;
-  console.log("token" + token);
+  console.log("token : " + token);
+  localStorage.setItem('token', token);
   // Send the token to the client (e.g., in a query parameter, header, or cookie)
   res.redirect(`/profile?token=${token}`);
 });
@@ -103,16 +127,32 @@ app.get('/profile', (req, res) => {
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
       if (err) {
         console.log('Invalid token');
-        redirect('/auth/google'); 
+        res.redirect('/auth/google'); 
       }
       res.json({ message: 'Profile data', user: decoded });
     });
   } else {
     res.status(401).json({ message: 'Token required' });
-    redirect('/auth/google');
+    res.redirect('/auth/google');
+  }
+});
+
+app.get('/login', (req, res) => {
+  const token = getCookie('token');
+  if (token) {
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        console.log('Invalid token');
+        res.redirect('/auth/google'); 
+      }
+      res.json({ message: 'Profile data', user: decoded });
+    });
+  } else {
+    res.status(401).json({ message: 'Token required' });
+    res.redirect('/auth/google');
   }
 });
 
 app.listen(SERVER_PORT, () => {
-  console.log(`Server is running on http://localhost:3005`);
+  console.log(`Login is running on http://localhost:${SERVER_PORT}`);
 });
