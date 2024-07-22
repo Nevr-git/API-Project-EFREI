@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { FaPlusCircle } from 'react-icons/fa';
 import PropTypes from 'prop-types';
+import handler from '../pages/api/tasks'
 
 const InputTodo = (props) => {
   const [inputTitle, setTitle] = useState({
