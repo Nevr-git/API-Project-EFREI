@@ -16,14 +16,24 @@ const InputTodo = (props) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { addTodoItem } = props;
     if (inputTitle.title.trim()) {
-      addTodoItem(inputTitle.title);
-      setTitle({
-        title: '',
-      });
+      try {
+        // Add the todo item locally
+        addTodoItem(inputTitle.title);
+
+        // Send the todo item to the backend
+        const response = await axios.post('http://localhost:3000/tasks', { title: inputTitle.title });
+        console.log('Task added:', response.data);
+
+        setTitle({
+          title: '',
+        });
+      } catch (error) {
+        console.error('Error adding task:', error);
+      }
     }
   };
   return (

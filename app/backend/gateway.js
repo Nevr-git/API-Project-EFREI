@@ -9,7 +9,7 @@ const TASKS_PORT = process.env.TASKS_PORT;
 
 const app = express();
 
-app.use('/data', createProxyMiddleware({ target: `http://localhost:${BACKEND_PORT}/login`, changeOrigin: true}));
+app.use('/data', createProxyMiddleware({ target: `http://localhost:${BACKEND_PORT}`, changeOrigin: true}));
 app.use('/login', createProxyMiddleware({ target: `http://localhost:${LOGIN_PORT}`, changeOrigin: true,
     onProxyReq: (proxyReq, req, res) => {
         console.log(`Proxying request to: http://localhost:${LOGIN_PORT}${req.url}`);

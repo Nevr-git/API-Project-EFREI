@@ -10,18 +10,26 @@ import About from '../pages/About';
 import Login from '../pages/Login'
 import NotMatch from '../pages/NotMatch';
 import Navbar from './Navbar';
+import Profile from '../pages/Profile'
 import '../style.css';
+import axios from 'axios';
 
 const TodoContainer = () => {
   const [todos, setState] = useState([]);
 
   useEffect(() => {
-    if (todos) {
-      fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
-        .then((response) => response.json())
-        .then((data) => setState(data));
-    }
+    const fetchTodos = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/tasks');  // Fetch from API gateway
+        setState(response.data);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
+    };
+    fetchTodos();
   }, []);
+
+
   const handleChange = (id) => {
     setState((prevState) => prevState.map((todo) => {
       if (todo.id === id) {
@@ -37,6 +45,8 @@ const TodoContainer = () => {
       ...todos.filter((todo) => todo.id !== id),
     ]);
   };
+
+
   const addTodoItem = (title) => {
     const newTodo = {
       id: uuidv4(),
@@ -45,6 +55,8 @@ const TodoContainer = () => {
     };
     setState([...todos, newTodo]);
   };
+
+
   const setUpdate = (title, id) => {
     setState((prevState) => (
       prevState.map((todo) => {
@@ -77,6 +89,7 @@ const TodoContainer = () => {
             </div>
     )}
         />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<NotMatch />} />

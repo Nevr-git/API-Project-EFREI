@@ -1,8 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
+
+const app = express()
 
 const BASE_URL = process.env.TASKS_MICROSERVICE_URL; // Ensure this is set in your .env.local
 
@@ -67,3 +68,7 @@ module.exports = {
   updateTask,
   deleteTask
 };
+
+app.listen(SERVER_PORT, () => {
+    console.log(`Login is running on http://localhost:${SERVER_PORT}`);
+  });

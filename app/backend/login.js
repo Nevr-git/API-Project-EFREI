@@ -111,9 +111,9 @@ app.get('/auth/callback', passport.authenticate('google', { session: false }), (
   // Retrieve the JWT token from req.authInfo
   const token = req.authInfo.token;
   console.log("token : " + token);
-  res.cookie('token', token, { httpOnly: true, secure: true });
   // Send the token to the client (e.g., in a query parameter, header, or cookie)
-  res.redirect(`/profile`);
+  res.cookie('token', token, { httpOnly: true, secure: true });
+  res.redirect(`http://localhost:3000`);
 });
 
 // Route to display the user's profile after authentication
@@ -133,20 +133,6 @@ app.get('/profile', (req, res) => {
   }
 });
 
-app.get('/login', (req, res) => {
-  const token = req.cookies.token;
-  if (token) {
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      if (err) {
-        console.log('Invalid token');
-        res.redirect('/auth/google'); 
-      }
-      res.json({ message: 'Profile data', user: decoded });
-    });
-  } else {
-    res.status(401).json({ message: 'Token required' });
-  }
-});
 
 app.listen(SERVER_PORT, () => {
   console.log(`Login is running on http://localhost:${SERVER_PORT}`);
