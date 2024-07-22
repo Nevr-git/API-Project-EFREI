@@ -1,3 +1,5 @@
+# Not functionnal (except app/backend/login.js partially)
+
 # Installing the packages
 npm install
 // OR //
