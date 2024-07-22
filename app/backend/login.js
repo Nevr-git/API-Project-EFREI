@@ -112,7 +112,7 @@ app.get('/auth/callback', passport.authenticate('google', { session: false }), (
   const token = req.authInfo.token;
   console.log("token : " + token);
   // Send the token to the client (e.g., in a query parameter, header, or cookie)
-  res.cookie('token', token, { httpOnly: true, secure: true });
+  res.cookie('token', token, { httpOnly: true });
   res.redirect(`http://localhost:3000`);
 });
 

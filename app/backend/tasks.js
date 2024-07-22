@@ -5,7 +5,7 @@ const axios = require('axios');
 
 const app = express()
 
-const BASE_URL = process.env.TASKS_MICROSERVICE_URL; // Ensure this is set in your .env.local
+const SERVER_PORT = process.env.TASKS_PORT; // Ensure this is set in your .env.local
 
 // Function to get all tasks
 async function getTasks() {

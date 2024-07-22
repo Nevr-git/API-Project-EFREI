@@ -13,12 +13,13 @@ const Profile = () => {
       try {
         // Get the token from cookies
         const { token } = parseCookies();
+        console.log(token)
         if (!token) {
           throw new Error('No token found');
         }
 
         // Fetch user profile from backend
-        const response = await axios.get('/api/profile', { headers: { Authorization: `Bearer ${token}` } });
+        const response = await axios.get('/api/login', { headers: { Authorization: `Bearer ${token}` } });
         setUser(response.data.user);
       } catch (err) {
         setError(err.message);
