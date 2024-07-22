@@ -24,5 +24,5 @@ BACKEND_PORT
 TASKS_PORT
 AUTH_PORT
 
-# Frontend comes from thecodechaser
+# Frontend comes from [https://github.com/thecodechaser](thecodechaser)
 [Source code can be found here](https://github.com/thecodechaser/todo-list-react)
